@@ -9,7 +9,7 @@ def escape_quotes(path):
     return path.replace('"', r'\"')
 
 def encode_mp3(flac_file,mp3_file):
-    command = 'ffmpeg -i %s -map_metadata 0:s:0 -id3v2_version 4 -ab 192k -ac 2 -ar 48000 %s' %(flac_file,mp3_file)
+    command = """ffmpeg -i "%s" -map_metadata 0:s:0 -id3v2_version 4 -ab 192k -ac 2 -ar 48000 "%s" """ %(flac_file,mp3_file)
     os.system(command)
 
 def cleanRecursive(directory):
@@ -29,7 +29,7 @@ def cleanRecursive(directory):
 def main(opts , argv):
     source = argv[1]
     target = argv[2]
-    print 'Flac --> Mp3 maintainer running on source dir : %s , target dir : %s' %source,target    
+    print 'Flac --> Mp3 maintainer running on source dir : %s , target dir : %s' %(source,target)    
     if os.path.isdir(source):
         if opts.remove:
             'Cleaning empty folders and non flac files from source directory'
@@ -57,6 +57,7 @@ def main(opts , argv):
                     f = os.path.join(dr ,mp3_file)
                     #add option to overwrite existing mp3s
                     if not os.path.isfile(f):
+                        print 'Encoding file %s' %f
                         encode_mp3(os.path.join(root,x), f)
 
 
