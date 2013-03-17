@@ -62,8 +62,9 @@ def main(opts , argv):
                     if not os.path.isfile(f):
                         print 'Encoding file %s' %f
                         encode_mp3(os.path.join(root,x), f)
-                        #we only want to encode one file at a time as the synology NAS is very very slow so we dont wanna lock it up forever
-                        sys.exit()
+                        if not opts.fast:
+                            #we only want to encode one file at a time as the synology NAS is very very slow so we dont wanna lock it up forever
+                            sys.exit()
 
 
 
@@ -71,6 +72,7 @@ if __name__ == '__main__':
     import optparse
     parser = optparse.OptionParser()
     parser.add_option('-r', '--remove', help='removes non flac files and empty folders from source', dest='remove', default=False, action='store_true')
+    parser.add_option('-f', '--fast', help='convert everything in one run, useful for fast computers',dest='fast',default=False,action='store_true')
     (opts, args) = parser.parse_args()
     if len(args) != 2:
         print 'usage: %s <source dir> <target dir>' % (sys.argv[0])
