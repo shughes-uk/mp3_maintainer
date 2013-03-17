@@ -9,14 +9,17 @@ def escape_quotes(path):
     return path.replace('"', r'\"')
 
 def encode_mp3(flac_file,mp3_file):
-    command = """ffmpeg -i "%s" -map_metadata 0:s:0 -id3v2_version 4 -ab 192k -ac 2 -ar 48000 "%s" """ %(flac_file,mp3_file)
+    if os.name =='nt':
+        command = """ffmpeg.exe -i "%s" -map_metadata 0:s:0 -id3v2_version 4 -ab 192k -ac 2 -ar 48000 "%s" """ %(flac_file,mp3_file)
+    else:
+        command = """ffmpeg -i "%s" -map_metadata 0:s:0 -id3v2_version 4 -ab 192k -ac 2 -ar 48000 "%s" """ %(flac_file,mp3_file)
     os.system(command)
 
 def cleanRecursive(directory):
     for root , subfolders , files in os.walk(directory ,topdown=False):
         for x in files:
             name , extension = os.path.splitext(x)
-            if extension.lower() != '.flac':
+            if extension.lower() != '.flac' and extension.lower() != '.jpg':
                 outfileName = os.path.join(root, x)
                 print 'Deleting file %s' %outfileName
                 os.remove(outfileName)
@@ -32,7 +35,7 @@ def main(opts , argv):
     print 'Flac --> Mp3 maintainer running on source dir : %s , target dir : %s' %(source,target)    
     if os.path.isdir(source):
         if opts.remove:
-            'Cleaning empty folders and non flac files from source directory'
+            print 'Cleaning empty folders and non flac files from source directory'
             cleanRecursive(source)
         if not os.path.isdir(target):
             os.mkdir(target)
